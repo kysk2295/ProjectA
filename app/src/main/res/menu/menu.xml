@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<item
+    android:id="@+id/home"
+    app:showAsAction="ifRoom"
+    android:enabled="true"
+    android:icon="@drawable/home_"
+    android:title="home"></item>
+
+    <item
+        android:id="@+id/timer"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/stopwatch"
+        android:title="timer"></item>
+</menu>
