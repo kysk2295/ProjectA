@@ -116,6 +116,7 @@ public class Fragment1 extends Fragment {
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
             View v=LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item,parent,false);
+
             return new ViewHolder(v);
         }
 

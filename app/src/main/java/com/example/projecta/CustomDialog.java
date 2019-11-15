@@ -27,12 +27,12 @@ public class CustomDialog extends Dialog {
         else
             return "";
     }
-    public String getTime(){
-        if(time != null)
-            return time.getText().toString();
-        else
-            return "";
-    }
+//    public String getTime(){
+//        if(time != null)
+//            return time.getText().toString();
+//        else
+//            return "";
+//    }
     public String getDesc(){
         if(desc != null)
             return desc.getText().toString();
@@ -57,7 +57,7 @@ public class CustomDialog extends Dialog {
         negative=findViewById(R.id.text_no);
         name=findViewById(R.id.edit_name);
 //        date=findViewById(R.id.edit_date);
-        time=findViewById(R.id.edit_time);
+        //time=findViewById(R.id.edit_time);
         desc=findViewById(R.id.edit_desc);
 
         positive.setOnClickListener(positiveListener);

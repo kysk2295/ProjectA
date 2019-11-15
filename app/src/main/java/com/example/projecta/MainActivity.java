@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -44,6 +47,11 @@ public class MainActivity extends AppCompatActivity {
     EditText name,date,time,desc;
     Context context=this;
     String a,b,c,d;
+    TimePickerDialog dialog;
+    String d_time;
+    //TimePickerDialog.OnTimeSetListener listener;
+    View.OnClickListener negativeListener;
+
     private static final String TAG_DATETIME_FRAGMENT = "TAG_DATETIME_FRAGMENT";
 
     @Override
@@ -61,14 +69,16 @@ public class MainActivity extends AppCompatActivity {
         dateTimeFragment = (SwitchDateTimeDialogFragment) getSupportFragmentManager().findFragmentByTag(TAG_DATETIME_FRAGMENT);
         if(dateTimeFragment == null) {
             dateTimeFragment = SwitchDateTimeDialogFragment.newInstance(
-                    getString(R.string.label_datetime_dialog),
+                    "수행 날짜",
                     getString(android.R.string.ok),
                     getString(android.R.string.cancel)
             );
-
         }
+        dialog= new TimePickerDialog(this,listener,15,24,true);
+        customDialog= new CustomDialog(MainActivity.this,negativeListener);
         dateTimeFragment.setTimeZone(TimeZone.getDefault());
-        final SimpleDateFormat myDateFormat = new SimpleDateFormat("d MMM yyyy HH:mm", java.util.Locale.getDefault());
+        final SimpleDateFormat myDateFormat = new SimpleDateFormat("yyyy년 MM월 dd일 EE요일 hh시 mm분", java.util.Locale.getDefault());
+
         // Assign unmodifiable values
         dateTimeFragment.set24HoursMode(false);
         dateTimeFragment.setHighlightAMPMSelection(false);
@@ -86,8 +96,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPositiveButtonClick(Date date) {
                 a=myDateFormat.format(date);
-                customDialog.show();
-                Toast.makeText(getApplicationContext(),a,Toast.LENGTH_LONG).show();
+                showTimePickDialog();
+
+                //Toast.makeText(getApplicationContext(),a,Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -99,19 +110,22 @@ public class MainActivity extends AppCompatActivity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dateTimeFragment.startAtCalendarView();
+                dateTimeFragment.setDefaultDateTime(new GregorianCalendar(2019, Calendar.NOVEMBER, 15, 15, 20).getTime());
+                dateTimeFragment.show(getSupportFragmentManager(), TAG_DATETIME_FRAGMENT);
 
-                customDialog= new CustomDialog(MainActivity.this,negativeListener);
                 customDialog.setPositiveListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         b=customDialog.getName();
-                        c=customDialog.getTime();
+                        c=d_time;
                         d=customDialog.getDesc();
-
                         Toast.makeText(getApplicationContext(),"수행이 저장되었습니다.",Toast.LENGTH_SHORT).show();
                         dbInsert("tb_project",b,a,c,d);
                         Log.d("name",name.getText().toString());
                         customDialog.dismiss();
+
+
 
                     }
                 });
@@ -119,22 +133,24 @@ public class MainActivity extends AppCompatActivity {
                 View dialogView = inflater.inflate(R.layout.dialog, null);
                // date=dialogView.findViewById(R.id.edit_date);
                 name=dialogView.findViewById(R.id.edit_name);
-                time=dialogView.findViewById(R.id.edit_time);
+                //time=dialogView.findViewById(R.id.edit_time);
                 desc=dialogView.findViewById(R.id.edit_desc);
 
-                dateTimeFragment.startAtCalendarView();
-                dateTimeFragment.setDefaultDateTime(new GregorianCalendar(2019, Calendar.NOVEMBER, 15, 15, 20).getTime());
-                dateTimeFragment.show(getSupportFragmentManager(), TAG_DATETIME_FRAGMENT);
+
 
             }
 
-            View.OnClickListener negativeListener= new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    customDialog.dismiss();
-                }
-            };
+
+
         });
+
+
+        negativeListener= new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                customDialog.dismiss();
+            }
+        };
 
 
 
@@ -156,6 +172,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void showTimePickDialog() {
+
+        Log.d("start","start1");
+        dialog.setMessage("목표 시간 설정");
+        dialog.show();
+
+    }
+
+
     void dbInsert(String tableName, String name, String date, String time,String desc) {
 
         ContentValues contentValues = new ContentValues();
@@ -169,6 +194,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    TimePickerDialog.OnTimeSetListener listener= new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker timePicker, int i, int i1) {
+            Log.d("start","start2");
+            d_time=i+"시 "+i1+"분";
+            customDialog.show();
+
+        }
+    };
 
 
 }

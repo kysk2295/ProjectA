@@ -21,22 +21,37 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Project A"
+            android:text="Schedule Stack"
             android:textSize="20sp"
             android:textColor="#ffffff"
             android:layout_gravity="center_vertical">
 
         </TextView>
 
+            <com.andexert.library.RippleView
+                android:id="@+id/more"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="right|center_vertical"
+                android:layout_margin="15dp"
+                app:rv_centered="true"
+                app:rv_zoom="true"
+                app:rv_zoomDuration="150"
+                app:rv_zoomScale="1.3"
+                app:rv_framerate="10">
+
         <ImageView
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:src="@drawable/_plus_"
-            android:layout_gravity="right|center_vertical"
+            android:layout_centerInParent="true"
             android:layout_margin="15dp"
+            android:padding="3dp"
             android:id="@+id/plus">
-
         </ImageView>
+
+            </com.andexert.library.RippleView>
+
 
         </FrameLayout>
 
