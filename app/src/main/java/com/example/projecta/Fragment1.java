@@ -103,6 +103,7 @@ public class Fragment1 extends Fragment {
             data.time=time;
             data.desc=desc;
             arrayList.add(data);
+            //TODO: 나중에 개발하자 ㅎ
         }
         myAdapter.notifyDataSetChanged();
     }
