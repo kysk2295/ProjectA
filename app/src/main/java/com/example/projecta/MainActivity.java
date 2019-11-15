@@ -100,7 +100,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                customDialog= new CustomDialog(MainActivity.this,positiveListener,negativeListener);
+                customDialog= new CustomDialog(MainActivity.this,negativeListener);
+                customDialog.setPositiveListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        b=customDialog.getName();
+                        c=customDialog.getTime();
+                        d=customDialog.getDesc();
+
+                        Toast.makeText(getApplicationContext(),"수행이 저장되었습니다.",Toast.LENGTH_SHORT).show();
+                        dbInsert("tb_project",b,a,c,d);
+                        Log.d("name",name.getText().toString());
+                        customDialog.dismiss();
+
+                    }
+                });
                 LayoutInflater inflater = LayoutInflater.from(context);
                 View dialogView = inflater.inflate(R.layout.dialog, null);
                // date=dialogView.findViewById(R.id.edit_date);
@@ -114,19 +128,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-            View.OnClickListener positiveListener= new View.OnClickListener() {
-
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(getApplicationContext(),"수행이 저장되었습니다.",Toast.LENGTH_SHORT).show();
-                    dbInsert("tb_project",name.getText().toString(),a,time.getText().toString(),desc.getText().toString());
-
-                    Log.d("name",name.getText().toString());
-                    customDialog.dismiss();
-
-
-                }
-            };
             View.OnClickListener negativeListener= new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
