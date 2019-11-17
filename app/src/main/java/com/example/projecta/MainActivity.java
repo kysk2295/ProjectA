@@ -6,11 +6,15 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.TimePickerDialog;
+import android.app.job.JobScheduler;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +25,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.example.projecta.service.JobSchedulerStart;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.kunzisoft.switchdatetime.SwitchDateTimeDialogFragment;
@@ -50,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     TimePickerDialog dialog;
     String d_time;
     //TimePickerDialog.OnTimeSetListener listener;
-    View.OnClickListener negativeListener;
 
     private static final String TAG_DATETIME_FRAGMENT = "TAG_DATETIME_FRAGMENT";
 
@@ -74,6 +79,17 @@ public class MainActivity extends AppCompatActivity {
                     getString(android.R.string.cancel)
             );
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelId = "channel_id"; // 채널 아이디
+            CharSequence channelName = "channel_name"; //채널 이름
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+
         dialog= new TimePickerDialog(this,listener,15,24,true);
         customDialog= new CustomDialog(MainActivity.this,negativeListener);
         dateTimeFragment.setTimeZone(TimeZone.getDefault());
@@ -145,12 +161,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        negativeListener= new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                customDialog.dismiss();
-            }
-        };
+
 
 
 
@@ -169,6 +180,8 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        JobSchedulerStart.start(this);
 
     }
 
@@ -193,6 +206,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    View.OnClickListener negativeListener= new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            customDialog.dismiss();
+        }
+    };
 
     TimePickerDialog.OnTimeSetListener listener= new TimePickerDialog.OnTimeSetListener() {
         @Override

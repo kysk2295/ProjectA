@@ -50,7 +50,6 @@ public class Fragment1 extends Fragment {
         recyclerView.setHasFixedSize(true);
         ItemTouchHelper itemTouchHelper= new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
-
         arrayList.clear();
         dataPut();
 
@@ -93,6 +92,7 @@ public class Fragment1 extends Fragment {
         String sql="select * from tb_project";
         Cursor cursor=sqLiteDatabase.rawQuery(sql,null);
         while (cursor.moveToNext()){
+            int num=cursor.getInt(0);
             String name=cursor.getString(1);
             String date=cursor.getString(2);
             String time=cursor.getString(3);
@@ -102,6 +102,7 @@ public class Fragment1 extends Fragment {
             data.date=date;
             data.time=time;
             data.desc=desc;
+            data.num=num;
             arrayList.add(data);
             //TODO: 나중에 개발하자 ㅎ
         }
@@ -133,7 +134,6 @@ public class Fragment1 extends Fragment {
                     final LinearLayout dialog_button=v.findViewById(R.id.diaog_button);
                     final  TextView ok=v.findViewById(R.id.dialog_ok);
                     final TextView no=v.findViewById(R.id.dialog_no);
-
                     date.setText(data.date);
                     time.setText(data.time);
                     desc.setText(data.desc);
@@ -149,7 +149,7 @@ public class Fragment1 extends Fragment {
                             values.put("date",data2.date);
                             values.put("time",data2.time);
                             values.put("description",data2.desc);
-                            sqLiteDatabase.update("tb_project",values,"date=?", new String[]{data.date});
+                            sqLiteDatabase.update("tb_project",values,"_id=?",new String[]{String.valueOf(data.num)});
                             dialog_button.setVisibility(View.GONE);
 
                         }
